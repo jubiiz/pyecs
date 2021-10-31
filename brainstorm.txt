@@ -26,5 +26,40 @@ maybe : build undirected graph
     solve matrix [Ax|b] for all x
 
 
+what I,ll need: 
+nodes: voltage (none if it's not a battery)
 
-    each
+edges: type (battery or resistance), 
+    resistance, (0 for a battery, else has to be given)
+    voltage, (None for both before calculated according to type)
+    current (None before calculations)
+    polarity : dictionary of {I_i: node_a, I_j : node_b} value being the first node of traversal
+
+
+
+solving algoritm: 
+    need list of n loops (lists of n intensities) where n = len(base_cycles)
+    need the transpose of a list of a list of n voltages
+    for loop in loops:
+        for edge in loop:
+            for I in polarity:
+                if type is resistance:
+                    if start_node == traversal_node: #(if you come from the same node as the I)
+                        loops[loop][corresponding_I] += resistance
+                    else: 
+                        loops[loop][corresponding_I] -= resistance
+                else:
+                    if same polarity : 
+                        voltages[corresponding_loop] += voltage
+                    else:
+                        voltages[corresponding_loop] -= voltage
+
+    numpy solve: intensities = (loops, voltages)
+
+    can then update current and voltage for every edge
+    can then show an updated graph :))
+
+
+
+
+
