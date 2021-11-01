@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 
+SD = 4
 
 def solve(graph, cycles):
     # finds the cycles,  initiates the intensity matrix, initiates the voltage matrix
@@ -44,17 +45,27 @@ def solve(graph, cycles):
     for i in range(len(cycles)):
         cycle = cycles[i]
         for j in range(len(cycle)):
-            edge = graph.edges[(cycle[j], cycle[(j+1)%len(cycle)])] # the edge we want
+            edge_id = (cycle[j], cycle[(j+1)%len(cycle)])
+            edge = graph.edges[edge_id] # the edge we want
             if edge["type"] == "resistance":
-                if cycle[j] == edge["polarity"][i]:   # if polarity is same as direction of loop : if the first letter of our edge is the same as the letter associated to the polarity of this cycle
-                    edge["current"] += intensities[i][0]
-                    edge["voltage"] += (intensities[i][0] * edge["resistance"])
-                    #intensity_matrix[i][p] += edge["resistance"]   # intensity_matrix[cycle_number][polarity_number]
-                else: 
-                    edge["current"] -= intensities[i][0]
-                    edge["voltage"] -= (intensities[i][0] * edge["resistance"])
-                    #intensity_matrix[i][p] -= edge["resistance"]
-
+                if edge["current"] == 0:
+                    for p in edge["polarity"]: 
+                        if cycle[j] == edge["polarity"][p]:   # if polarity is same as direction of loop : if the first letter of our edge is the same as the letter associated to the polarity of this cycle
+                            edge["current"] += intensities[p][0]   # intensity_matrix[cycle_number][polarity_number]
+                            if edge["type"] == "resistance":
+                                edge["voltage"] += (intensities[p][0] * edge["resistance"])
+                        else: 
+                            edge["current"] -= intensities[p][0] 
+                            if edge["type"] == "resistance":
+                                edge["voltage"] -= (intensities[p][0] * edge["resistance"])
+                    # set the direction of current (flow) in the direction of I 
+                    edge["flow"] = edge_id[0]
+                    edge["current"] = round(edge["current"], SD)
+                    edge["voltage"] = round(edge["voltage"], SD)
+                    if edge["current"] < 0:
+                        edge["flow"] = edge_id[0]
+                        edge["current"] *= -1
+                        edge["voltage"] *= -1
                     
 
 

@@ -59,6 +59,7 @@ solving algoritm:
     can then update current and voltage for every edge
     can then show an updated graph :))
 
+    pyton tkinters for gui
 
 
 
