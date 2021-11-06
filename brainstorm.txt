@@ -60,7 +60,6 @@ solving algoritm:
     can then show an updated graph :))
 
     pyton tkinters for gui
-
-
+        either a graphic in which I can click, or a grid where I can connect 2 "nodes"
 
 

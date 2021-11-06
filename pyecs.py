@@ -82,58 +82,34 @@ def build_polarity(graph, cycles):
 
     return(graph)
 
-def main():
-
-    """# build the circuit
-    g = nx.Graph()
-    g.add_edge("A", "B", type="battery", resistance=0, polarity="A", voltage=9)
-    g.add_edge("A", "D", type="resistance", resistance=3300, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "C", type="resistance", resistance=330, polarity={}, voltage=0, current=0)
-    g.add_edge("C", "B", type="resistance", resistance=33000, polarity={}, voltage=0, current=0)
-    g.add_edge("B", "D", type="resistance", resistance=27000, polarity={}, voltage=0, current=0)
-    g.add_edge("C", "D", type="resistance", resistance=5600, polarity={}, voltage=0, current=0)
-    print(nx.cycle_basis(g))"""
-
-    """ # build the circuit
-    g = nx.Graph()
-    g.add_edge("A", "B", type="battery", resistance=0, polarity={"B"}, voltage=12)
-    g.add_edge("D", "E", type="battery", resistance=0, polarity={"D"}, voltage=24)
-    g.add_edge("B", "C", type="resistance", resistance=3, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "F", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
-    g.add_edge("C", "D", type="resistance", resistance=6, polarity={}, voltage=0, current=0)
-    g.add_edge("C", "F", type="resistance", resistance=9, polarity={}, voltage=0, current=0)
-    g.add_edge("F", "E", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
-    """
-
-    """g = nx.Graph()
-    g.add_edge("A", "B", type="battery", resistance=0, polarity={"B"}, voltage=9)
-    g.add_edge("E", "F", type="battery", resistance=0, polarity={"F"}, voltage=5)
-    g.add_edge("A", "C", type="resistance", resistance=100, polarity={}, voltage=0, current=0)
-    g.add_edge("C", "D", type="resistance", resistance=100, polarity={}, voltage=0, current=0)
-    g.add_edge("B", "D", type="resistance", resistance=100, polarity={}, voltage=0, current=0)
-    g.add_edge("B", "F", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
-    g.add_edge("F", "D", type="resistance", resistance=100, polarity={}, voltage=0, current=0)
-    g.add_edge("E", "C", type="resistance", resistance=100, polarity={}, voltage=0, current=0)
-    """
+def buildgraph():
     g = nx.Graph()
     g.add_edge("X", "B", type="resistance", resistance=6, polarity={}, voltage=0, current=0)
     g.add_edge("A", "X", type="battery", resistance=0, polarity={"X"}, voltage=75, current=0)
     g.add_edge("A", "Y", type="battery", resistance=0, polarity={"Y"}, voltage=125, current=0)
     g.add_edge("Y", "B", type="resistance", resistance=4, polarity={}, voltage=0, current=0)
     g.add_edge("A", "B", type="resistance", resistance=8.1, polarity={}, voltage=0, current=0)
+    return(g)
+
+def main():
+
+    
+    g = buildgraph()
 
 
+    cycles = nx.cycle_basis(g)
+    g = build_polarity(g, cycles)
+    solved = solve(g, cycles)
+
+
+    for n in g.adj:
+        for e in g.adj[n]:
+            print("node {} to node {} : ".format(n, e), g.adj[n][e])
 
     # my drawing part
     s3 = plt.subplot(111)
     nx.draw_planar(g, with_labels=True)
     plt.show()
-    cycles = nx.cycle_basis(g)
-    g = build_polarity(g, cycles)
-    solved = solve(g, cycles)
-
-    print(solved.adj)
-
 
 
 if __name__ == "__main__":
