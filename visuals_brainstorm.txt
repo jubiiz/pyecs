@@ -1,0 +1,6 @@
+could add CLI commands
+
+first things first lets get a csv graph reader... right?
+    
+then node selection from case double-click (or click and drag?)
+    coupled with GUI prompting type and value (resistance or voltage, depending on type)

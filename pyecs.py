@@ -1,7 +1,10 @@
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
+import csv
+import os
 
+# number of decimals to be conserved in the answers
 SD = 4
 
 def solve(graph, cycles):
@@ -28,7 +31,7 @@ def solve(graph, cycles):
                     else: 
                         intensity_matrix[i][p] -= edge["resistance"]
                 else:
-                    if cycle[j] == p:
+                    if cycle[j] == edge["polarity"][p]:
                         voltage_matrix[i][0] += edge["voltage"]
                     else:
                         voltage_matrix[i][0] -= edge["voltage"]
@@ -93,7 +96,7 @@ def buildgraph():
     """
 
     g = nx.Graph()
-    g.add_edge("A", "B", type="battery", resistance=0, polarity={"B"}, voltage=9, current=0)
+    g.add_edge("A", "B", type="battery", resistance=0, polarity={-1:"B"}, voltage=9, current=0)
     g.add_edge("C", "B", type="resistance", resistance=10, polarity={}, voltage=0, current=0)
     g.add_edge("A", "C", type="resistance", resistance=25, polarity={}, voltage=0, current=0)
     g.add_edge("A", "E", type="resistance", resistance=75, polarity={}, voltage=0, current=0)
@@ -103,11 +106,63 @@ def buildgraph():
     g.add_edge("A", "G", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
     g.add_edge("G", "C", type="resistance", resistance=15, polarity={}, voltage=0, current=0)
     return(g)
+
+
+def graph_from_pandas(filename):
+    """
+    creates and return a graph from a csv file using pandas
+    uses "|" as the delimiter for the csv file !!!need to modify the code or the file for them to be compatible with different delimiters!!!
+    parameter filename : the name of the input file, without the suffix (.csv) (ex: graph1)
+    file must be in "graphs" folder
+    """
+    import pandas as pd
+    path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
+    df = pd.read_csv(path, delimiter="|")
+    g = nx.Graph()
+    num_rows = len(df)
+    # for every row, add the necessary stuff to the graph
+    for i in range(num_rows):
+        #works polarity:
+        polarity = {}
+        print(type(df["polarity"][i]))
+        print((df["polarity"][i]))
+        if not pd.isna(df["polarity"][i]):
+            for p in df["polarity"][i].split("#"):
+                loop_num = p.split(":")[0]
+                start = p.split(":")[1]
+                polarity[int(loop_num)] = start
+        print()
+        g.add_edge(df["node1"][i], df["node2"][i], type=df["type"][i], resistance=df["resistance"][i], polarity=polarity, voltage=df["voltage"][i], current=df["current"][i], flow=df["flow"][i])
+    
+    return(g)
+
+def graph_from_csv(filename):
+    path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
+    with open(path) as csv_file:
+        r = csv.reader(csv_file, delimiter="|")
+        col_names = r
+        num_rows = 0
+        for row in r:
+            if num_rows != 0:
+                node1 = row[0]
+                node2 = row[1]
+                type = row[2]
+                resistance = row[3]
+                #works polarity:
+                polarity = {}
+                for p in row[4].split(";"):
+                    loop_num = p.split("-")[0]
+                    start = p.split("-")[1]
+                    polarity[int(loop_num)] = start
+            num_rows += 1
+
 def main():
 
     
     g = buildgraph()
-
+    #print(n.adj)
+    n=graph_from_pandas("graph1")
+    print(g.adj)
 
     cycles = nx.cycle_basis(g)
     g = build_polarity(g, cycles)
