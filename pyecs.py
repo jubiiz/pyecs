@@ -136,7 +136,11 @@ def graph_from_pandas(filename):
     
     return(g)
 
-def graph_from_csv(filename):
+def csv_from_GUI(output_name):
+    fig, ax = plt.subplots()
+    plt.show()
+
+"""def graph_from_csv(filename):
     path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
     with open(path) as csv_file:
         r = csv.reader(csv_file, delimiter="|")
@@ -155,16 +159,17 @@ def graph_from_csv(filename):
                     start = p.split("-")[1]
                     polarity[int(loop_num)] = start
             num_rows += 1
-
+"""
 def main():
 
     
-    g = buildgraph()
+    #g = buildgraph()
     #print(n.adj)
-    n=graph_from_pandas("graph1")
-    print(g.adj)
+    filename = "new_graph"
+    csv_from_GUI(filename) 
+    g=graph_from_pandas("graph1")
 
-    cycles = nx.cycle_basis(g)
+    cycles = nx.cycle_basis(n)
     g = build_polarity(g, cycles)
     solved = solve(g, cycles)
 
@@ -175,7 +180,7 @@ def main():
 
     # my drawing part
     s3 = plt.subplot(111)
-    nx.draw_planar(g, with_labels=True)
+    nx.draw_planar(solved, with_labels=True)
     plt.show()
 
 
