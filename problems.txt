@@ -1,0 +1,12 @@
+problems and solutions
+
+problem: how to make a computer differentiate between parallel and serie circuit
+            Then what happens with loop circuits?
+    - solution : make the computer treat any circuit as a loop circuit (I learned I could do that)
+problem: how to tell a computer the shape of a circuit (in the code, how is the circuit represented)    
+    - solution:
+        circuits can be represented as graphs (graph theory defines a graph as a collection of nodes and edges (points and lines))
+        there is a popular Python library called Networkx made to interact with graphs
+problem: how do I find all my loops?? a bit of research indicates it's a complicated and lenghty algorithmic process
+    - Networkx has a function called "cycle_basis()" which finds them for the user
+
