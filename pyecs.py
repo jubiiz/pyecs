@@ -83,7 +83,7 @@ def build_polarity(graph, cycles):
     return(graph)
 
 def buildgraph():
-    """g = nx.Graph()
+    g = nx.Graph()
     g.add_edge("X", "B", type="resistance", resistance=6, polarity={}, voltage=0, current=0)
     g.add_edge("A", "X", type="battery", resistance=0, polarity={"X"}, voltage=75, current=0)
     g.add_edge("A", "Y", type="battery", resistance=0, polarity={"Y"}, voltage=125, current=0)
@@ -103,6 +103,7 @@ def buildgraph():
     g.add_edge("A", "G", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
     g.add_edge("G", "C", type="resistance", resistance=15, polarity={}, voltage=0, current=0)
     return(g)
+    """
 def main():
 
     
