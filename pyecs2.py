@@ -51,11 +51,12 @@ class GraphCreatorGUI():
             print("type and value are ", type, value)
             if type == "resistance":
                 # add a resistance edge
-                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=int(value), polarity={}, voltage=0, current=0)
+                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=float(value), polarity={}, voltage=0, current=0)
             else:
                 # add a battery edge
-                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=int(value), current=0)
-            
+                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=float(value), current=0)
+             
+
         # get stuff back to normal, ready for a new press
         self.press_case = None
         self.press = None
