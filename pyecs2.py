@@ -43,7 +43,7 @@ class GraphCreatorGUI():
         if new_case != self.press_case:
             # create new edge with (self.press_case, new_case) as n2odes
             # to do so we need a tkinter popup asking for data
-            type, value = input("type, value ").split()
+            type, value = get_edge_data()
             print("type and value are ", type, value)
             if type == "resistance":
                 # add a resistance edge
@@ -53,6 +53,7 @@ class GraphCreatorGUI():
                 # add a battery edge
                 self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=int(value), current=0)
                 style = "bo:"
+
 
         # show edge in graph, add info, ready for new press
         x = [self.press_case[0]+0.5, new_case[0]+0.5]
@@ -70,6 +71,8 @@ class GraphCreatorGUI():
         self.fig.canvas.mpl_disconnect(self.cidrelease)
 
 
+def get_edge_data():
+    
 
 
 

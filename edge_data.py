@@ -6,32 +6,47 @@ def create_radio_frame(parent):
     frame = Frame(parent)
     frame.rowconfigure(0, weight=1)
     frame.rowconfigure(1, weight=1)
-    frame.rowconfigure(2, weight=2)
         
     t = StringVar(value="resistance")
     # battery radio
     bat_rad = Radiobutton(frame, text="battery", value="battery", justify="left", variable=t)
-    bat_rad.grid(column=0, row=0)
+    bat_rad.grid(column=0, row=0, sticky="w")
 
     # resistance radio
     res_rad = Radiobutton(frame, text="resistance",value="resistance", justify="left", variable=t)
-    res_rad.grid(column=0, row=1)
-
-
-
+    res_rad.grid(column=0, row=1, sticky="w")
 
     return(frame, t)
 
+def create_entry_frame(parent):
+    frame = Frame(parent)
+    frame.rowconfigure(0, weight=1)
+    frame.rowconfigure(1, weight=1)
+
+    t = StringVar(value="0")
+    
+    # text input zone
+    entry = Entry(parent, textvariable=t)
+    entry.grid(column=1, row=0)
+
+    label = Label(parent, text="Value of the component")
+    label.grid(column=1, row=1)
+
+    return(frame, t)
+
+
+
 def create_main_window():
-    # root window
-    root = Tk()
-    root.title("Component Information")
+    # root frame
+    window = Tk()
+    root = Frame(window)
+    window.title("Component Information")
     w = 300 # width for the Tk root
     h = 100 # height for the Tk root
 
     # get screen width and height
-    ws = root.winfo_screenwidth() # width of the screen
-    hs = root.winfo_screenheight() # height of the screen
+    ws = window.winfo_screenwidth() # width of the screen
+    hs = window.winfo_screenheight() # height of the screen
 
     # calculate x and y coordinates for the Tk root window
     x = int((ws/2) - (w/2))
@@ -39,23 +54,27 @@ def create_main_window():
 
     # set the dimensions of the screen 
     # and where it is placed
-    root.geometry(f'{w}x{h}+{x}+{y}')
-    root.resizable(0, 0)
+    window.geometry(f'{w}x{h}+{x}+{y}')
+    window.resizable(0, 0)
 
     # layout on the root window
     root.columnconfigure(0, weight=1)
-    root.columnconfigure(2, weight=3)
+    root.columnconfigure(1, weight=3)
+    root.rowconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
     # radios
     radio_frame, c_type = create_radio_frame(root)
-    radio_frame.grid(column=0, row=0)
+    radio_frame.grid(column=0, row=0, sticky="w")
 
     # text input
-    # TODO
+    entry_frame, c_val = create_entry_frame(root)
+    entry_frame.grid(column=1, row=0, sticky="e")
     
-    mainloop()
-    return((c_type).get(), ))
 
+    root.pack()
+    mainloop()
+    print((c_type).get(), int(c_val.get()))
 
 if __name__ == "__main__":
     create_main_window()
