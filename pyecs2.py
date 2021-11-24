@@ -153,18 +153,6 @@ def build_polarity(graph, cycles):
     return(graph)
 
 def buildgraph():
-<<<<<<< HEAD:pyecs.py
-    g = nx.Graph()
-    g.add_edge("X", "B", type="resistance", resistance=6, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "X", type="battery", resistance=0, polarity={"X"}, voltage=75, current=0)
-    g.add_edge("A", "Y", type="battery", resistance=0, polarity={"Y"}, voltage=125, current=0)
-    g.add_edge("Y", "B", type="resistance", resistance=4, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "B", type="resistance", resistance=8.1, polarity={}, voltage=0, current=0)
-    return(g)
-    """
-
-=======
->>>>>>> a0f53caa6d01039ec46cba8a6b4868ee590387e3:pyecs2.py
     g = nx.Graph()
     g.add_edge("A", "B", type="battery", resistance=0, polarity={-1:"B"}, voltage=9, current=0)
     g.add_edge("C", "B", type="resistance", resistance=10, polarity={}, voltage=0, current=0)
@@ -176,11 +164,6 @@ def buildgraph():
     g.add_edge("A", "G", type="resistance", resistance=0, polarity={}, voltage=0, current=0)
     g.add_edge("G", "C", type="resistance", resistance=15, polarity={}, voltage=0, current=0)
     return(g)
-<<<<<<< HEAD:pyecs.py
-    """
-def main():
-=======
->>>>>>> a0f53caa6d01039ec46cba8a6b4868ee590387e3:pyecs2.py
 
 
 def graph_from_pandas(filename):
