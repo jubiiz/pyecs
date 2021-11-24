@@ -3,17 +3,21 @@ from math import floor
 import numpy as np
 import os
 import networkx as nx
+from tkinter import *
+from edge_data import *
+
 
 # number of decimals to be conserved in the answers
 SD = 4
 
 class GraphCreatorGUI():
-    def __init__(self, filename):
-        self.dictionary = {"node1":[], "node2":[], "type":[], "resistance":[], "polarity":[], "voltage":[], "current":[], "flow":[]}
-        self.path = os.path.join(os.getcwd(), f"graphs{os.sep}{filename}.csv")
+    def __init__(self):
+        # creates a matplotlib plot
         self.press = None
         self.fig, self.ax = plt.subplots()
         self.graph = nx.Graph()
+        self.ax.set_xlim(left=0, right=21)
+        self.ax.set_ylim(bottom=0, top=21)
         
         # sets ticks and size
         minor_ticks = np.linspace(0,20,21)
@@ -32,12 +36,7 @@ class GraphCreatorGUI():
         if event.inaxes != None:
             self.press = ((event.x, event.y), (event.xdata, event.ydata))
             self.press_case = (floor(event.xdata), floor(event.ydata))#find this
-            """            print(event.inaxes)
-            print(event.xdata)
-            print(event.ydata)
-            print(event.x)
-            print(event.y)
-            """
+            
     def onrelease(self, event):
         # need to 1) check if the click is happening in the same cell, if so, do nothing
         # if not same cell, take the two cell coordinates ()
@@ -47,23 +46,26 @@ class GraphCreatorGUI():
         if new_case != self.press_case:
             # create new edge with (self.press_case, new_case) as n2odes
             # to do so we need a tkinter popup asking for data
-            type, value = input("type, value ").split()
+            type, value = get_edge_data()
             print("type and value are ", type, value)
             if type == "resistance":
                 # add a resistance edge
-                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=float(value), polarity={}, voltage=0, current=0)
+                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=int(value), polarity={}, voltage=0, current=0)
+                style = "ko-"
             else:
                 # add a battery edge
-                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=float(value), current=0)
-             
+                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=int(value), current=0)
+                style = "bo:"
 
-        # get stuff back to normal, ready for a new press
+
+        # show edge in graph, add info, ready for new press
+        x = [self.press_case[0]+0.5, new_case[0]+0.5]
+        y = [self.press_case[1]+0.5, new_case[1]+0.5]
+        self.ax.plot(x, y, style)
+        self.ax.text(((x[0]+x[1])/2), ((y[0]+y[1])//2), f'{type} {value}', {'ha': 'center', 'va': 'center', 'bbox': {'fc': '0.8', 'pad': 0}}, rotation=30)
+        plt.show()
         self.press_case = None
-        self.press = None
-
-    def get_graph(self):
-        return(self.graph)
-            
+        self.press = None         
         
 
     def disconnect(self):
@@ -72,6 +74,9 @@ class GraphCreatorGUI():
         self.fig.canvas.mpl_disconnect(self.cidrelease)
 
 
+def get_edge_data():
+    t, v = create_main_window()
+    return(t, float(v))
 
 
 
@@ -154,15 +159,6 @@ def build_polarity(graph, cycles):
     return(graph)
 
 def buildgraph():
-    """g = nx.Graph()
-    g.add_edge("X", "B", type="resistance", resistance=6, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "X", type="battery", resistance=0, polarity={"X"}, voltage=75, current=0)
-    g.add_edge("A", "Y", type="battery", resistance=0, polarity={"Y"}, voltage=125, current=0)
-    g.add_edge("Y", "B", type="resistance", resistance=4, polarity={}, voltage=0, current=0)
-    g.add_edge("A", "B", type="resistance", resistance=8.1, polarity={}, voltage=0, current=0)
-    return(g)
-    """
-
     g = nx.Graph()
     g.add_edge("A", "B", type="battery", resistance=0, polarity={-1:"B"}, voltage=9, current=0)
     g.add_edge("C", "B", type="resistance", resistance=10, polarity={}, voltage=0, current=0)
@@ -204,36 +200,9 @@ def graph_from_pandas(filename):
     
     return(g)
 
-def csv_from_GUI(output_name):
-    fig, ax = plt.subplots()
-    plt.show()
-
-"""def graph_from_csv(filename):
-    path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
-    with open(path) as csv_file:
-        r = csv.reader(csv_file, delimiter="|")
-        col_names = r
-        num_rows = 0
-        for row in r:
-            if num_rows != 0:
-                node1 = row[0]
-                node2 = row[1]
-                type = row[2]
-                resistance = row[3]
-                #works polarity:
-                polarity = {}
-                for p in row[4].split(";"):
-                    loop_num = p.split("-")[0]
-                    start = p.split("-")[1]
-                    polarity[int(loop_num)] = start
-            num_rows += 1
-"""
 def main():
 
-    
-    filename = "new_graph"
-
-    c = GraphCreatorGUI(filename)
+    c = GraphCreatorGUI()
     c.connect()
     input("say something I'm giving up on you")
     c.disconnect()
