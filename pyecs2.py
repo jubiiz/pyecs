@@ -117,17 +117,16 @@ def solve(graph, cycles):
         for j in range(len(cycle)):
             edge_id = (cycle[j], cycle[(j+1)%len(cycle)])
             edge = graph.edges[edge_id] # the edge we want
-            if edge["type"] == "resistance":
-                if edge["current"] == 0:
-                    for p in edge["polarity"]: 
-                        if cycle[j] == edge["polarity"][p]:   # if polarity is same as direction of loop : if the first letter of our edge is the same as the letter associated to the polarity of this cycle
-                            edge["current"] += intensities[p][0]   # intensity_matrix[cycle_number][polarity_number]
-                            if edge["type"] == "resistance":
-                                edge["voltage"] += (intensities[p][0] * edge["resistance"])
-                        else: 
-                            edge["current"] -= intensities[p][0] 
-                            if edge["type"] == "resistance":
-                                edge["voltage"] -= (intensities[p][0] * edge["resistance"])
+            if edge["current"] == 0:
+                for p in edge["polarity"]: 
+                    if cycle[j] == edge["polarity"][p]:   # if polarity is same as direction of loop : if the first letter of our edge is the same as the letter associated to the polarity of this cycle
+                        edge["current"] += intensities[p][0]   # intensity_matrix[cycle_number][polarity_number]
+                        if edge["type"] == "resistance":
+                            edge["voltage"] += (intensities[p][0] * edge["resistance"])
+                    else: 
+                        edge["current"] -= intensities[p][0] 
+                        if edge["type"] == "resistance":
+                            edge["voltage"] -= (intensities[p][0] * edge["resistance"])
                     # set the direction of current (flow) in the direction of I 
                     edge["flow"] = edge_id[0]
                     edge["current"] = round(edge["current"], SD)
