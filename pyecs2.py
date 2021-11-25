@@ -106,10 +106,8 @@ def solve(graph, cycles):
     # use numpy to solve resulting matrices
     A = np.matrix(intensity_matrix)
     b = np.matrix(voltage_matrix)
-    print(A, b)
     intensities = np.linalg.solve(A, b)
     intensities = intensities.tolist()
-    print(intensities)
 
     # transfers those values into the graph
     for i in range(len(cycles)):
@@ -193,11 +191,13 @@ def graph_from_pandas(filename):
     
     return(g)
 
+
+
 def main():
 
     c = GraphCreatorGUI()
     c.connect()
-    input("say something I'm giving up on you")
+    #input("say something I'm giving up on you")
     c.disconnect()
     g = c.graph
 
@@ -208,10 +208,6 @@ def main():
     s3 = plt.subplot(111)
     nx.draw_planar(g, with_labels=True)
     plt.show()
-
-    for n in g.adj:
-        for e in g.adj[n]:
-            print("node {} to node {} : ".format(n, e), g.adj[n][e])
 
     solved = solve(g, cycles)
 
