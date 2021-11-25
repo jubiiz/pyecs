@@ -49,7 +49,7 @@ class CLI():
             - csv
             - gui    
         """
-        source = input("please input where you want to build your file from\ncsv or gui\n ").split(" ")
+        source = input("please input where you want to build your file from\ncsv or gui\n").split(" ")
         if len(source) == 0:
             print("usage : '=> build source'\n no graph was made : no source given\nsource are 'gui' or 'csv'")
             return None
@@ -80,32 +80,48 @@ class CLI():
 
     def show_class(self):
         target = input("input what to show, see help for details\n")
-        if target == "full":
-            if self.graph is not None:
+        if self.graph is not None:
+
+            # shows the list of nodes
+            if target == "full":
                 for node in self.graph.adj:
                     for edge in self.graph.adj[node]:
-                        print("node {} to node {} : ".format(node, edge), self.graph.adj[node][edge])
+                        print("node {} to node {} : ".format(node, edge), self.graph.adj[node][edge])                
+
+
+            # shows the plot of the data
+            elif target == "plot":
+
+                fig, ax = plt.subplots()
+                ax.set_xlim(left=0, right=21)
+                ax.set_ylim(bottom=0, top=21)
+                # sets ticks and size
+                minor_ticks = np.linspace(0,20,21)
+                ax.set_xticks(minor_ticks)
+                ax.set_yticks(minor_ticks)
+                ax.grid(True)
+                for s_n in self.graph.adj: # s_n for start node
+                    for e_n in self.graph.adj[s_n]: # e_n for end node
+                        # plotting line from s_n to e_n
+                        x = [s_n[0]+0.5, e_n[0]+0.5]
+                        y = [s_n[1]+0.5, e_n[1]+0.5]
+                        type = self.graph.adj[s_n][e_n]["type"]
+                        if type == "resistance":
+                            style = "ko-"
+                        else:
+                            style = "bo:"
+                        ax.plot(x, y, style)
+                plt.show()
+
             else:
-                print("no graph loaded")
-        elif target == "plot":
-            print("yeah gotta do this one from self.graph")
-
+                print("select valid target")
         else:
-            print("select valid target")
-
+            print("no graph loaded")
+            
 def main():
     cli = CLI()
 
     """
-
-        cycles = nx.cycle_basis(g)
-        g = build_polarity(g, cycles)
-        solved = solve(g, cycles)
-
-
-        for n in g.adj:
-            for e in g.adj[n]:
-                print("node {} to node {} : ".format(n, e), g.adj[n][e])
 
         # my drawing part
         s3 = plt.subplot(111)
