@@ -44,8 +44,8 @@ def solve(graph, cycles):
         for j in range(len(cycle)):
             edge_id = (cycle[j], cycle[(j+1)%len(cycle)])
             edge = graph.edges[edge_id] # the edge we want
-            if edge["current"] == 0:
-                for p in edge["polarity"]: 
+            if edge["current"] == 0: # if edge hasn't been updated
+                for p in edge["polarity"]: # for all the loops adjacent to that edge
                     if cycle[j] == edge["polarity"][p]:   # if polarity is same as direction of loop : if the first letter of our edge is the same as the letter associated to the polarity of this cycle
                         edge["current"] += intensities[p][0]   # intensity_matrix[cycle_number][polarity_number]
                         if edge["type"] == "resistance":
@@ -54,14 +54,18 @@ def solve(graph, cycles):
                         edge["current"] -= intensities[p][0] 
                         if edge["type"] == "resistance":
                             edge["voltage"] -= (intensities[p][0] * edge["resistance"])
-                    # set the direction of current (flow) in the direction of I 
+                
+                edge["current"] = round(edge["current"], SD)
+                edge["voltage"] = round(edge["voltage"], SD)
+                # set the direction of current (flow) in the direction of I 
+                if edge["type"] != "battery":
                     edge["flow"] = edge_id[0]
-                    edge["current"] = round(edge["current"], SD)
-                    edge["voltage"] = round(edge["voltage"], SD)
                     if edge["current"] < 0:
-                        edge["flow"] = edge_id[0]
+                        edge["flow"] = edge_id[1]
                         edge["current"] *= -1
                         edge["voltage"] *= -1
+                else:
+                    edge["flow"] = edge["polarity"][p]
                     
 
 
