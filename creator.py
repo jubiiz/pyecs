@@ -43,7 +43,7 @@ class GraphCreatorGUI():
             # to do so we need a tkinter popup asking for data
             type, value = input("enter edge type and value, separated by a space \n").split(" ")
             print("type and value are ", type, value)
-            if type == "resistance":
+            if type == "resistance" or type == "r":
                 # add a resistance edge
                 self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=int(value), polarity={}, voltage=0, current=0)
                 style = "ko-"

@@ -41,7 +41,9 @@ class CLI():
                     print(e.__class__)
 
     def help(self):
-        print("sry bud haven't done that yet, contact me if u rlly need to use the code")
+        with open("help.txt", "r") as h:
+            for line in h:
+                print(line)
 
 
     def build(self):

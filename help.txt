@@ -1,0 +1,16 @@
+Hi! Welcome to the PYECS software. This is the help guide. 
+The full text is available in the "help.txt" file
+The following commands are organized by indent: you can type the fist level commands, and will be prompted for further information
+here's a quick tour of the commands you can use:
+
+    help   (this is the current command, it shows the help document)
+
+    build (type this to load a graph into memory. You will be prompted for information:)
+        csv <filename> (to input a graph from csv, you must enter a valid filename of a csv table in the "graphs" folder)
+        gui (this will popup the GUI graph building interface)
+    
+    show (type this to display information about a graph loaded in memory. You will be prompted for information)
+        full (this shows the full list of edge pairs (so double the actual edges). It's useful when you want to verify edges connecting to a specific node)
+        plot (this shows the graph in matplotlib, BUT WILL GIVE AN ERROR if you try to input a graph that was not made from the GUI)
+
+    
