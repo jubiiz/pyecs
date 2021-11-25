@@ -45,11 +45,11 @@ class GraphCreatorGUI():
             print("type and value are ", type, value)
             if type == "resistance" or type == "r":
                 # add a resistance edge
-                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=int(value), polarity={}, voltage=0, current=0)
+                self.graph.add_edge(self.press_case, new_case, type="resistance", resistance=int(value), polarity={}, voltage=0, current=0, flow=0)
                 style = "ko-"
             else:
                 # add a battery edge
-                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=int(value), current=0)
+                self.graph.add_edge(self.press_case, new_case, type="battery", resistance=0, polarity={-1:self.press_case}, voltage=int(value), current=0, flow=0)
                 style = "bo:"
 
 
@@ -89,9 +89,9 @@ def graph_from_pandas(filename=None):
         if not pd.isna(df["polarity"][i]):
             for p in df["polarity"][i].split("#"):
                 loop_num = p.split(":")[0]
-                start = p.split(":")[1]
+                start = to_tuple(p.split(":")[1])
                 polarity[int(loop_num)] = start
-        g.add_edge(df["node1"][i], df["node2"][i], type=df["type"][i], resistance=df["resistance"][i], polarity=polarity, voltage=df["voltage"][i], current=df["current"][i], flow=df["flow"][i])
+        g.add_edge(to_tuple(df["node1"][i]), to_tuple(df["node2"][i]), type=df["type"][i], resistance=df["resistance"][i], polarity=polarity, voltage=df["voltage"][i], current=df["current"][i], flow=df["flow"][i])
     
     return(g)
 
@@ -103,6 +103,14 @@ def graph_from_GUI():
     c.connect()
     c.disconnect()
     return(c)
+
+def to_tuple(s):
+    if s[0] != "(":
+        return(s)
+    s = s.strip(")").strip("(").split(", ")
+    s = [int(x) for x in s]
+    s = tuple(s)
+    return(s)
 
 def buildgraph():
     g = nx.Graph()

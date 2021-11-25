@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
-from pyecs import * # for SD
+
+SD = 4
 
 def solve(graph, cycles):
     # finds the cycles,  initiates the intensity matrix, initiates the voltage matrix

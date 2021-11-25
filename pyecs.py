@@ -3,6 +3,7 @@ from math import floor
 import numpy as np
 import os
 import networkx as nx
+import pandas as pd
 
 from creator import *
 from solver import *
@@ -18,7 +19,7 @@ class CLI():
         self.cycles = None
         self.command = None
         self.cmd = {"help":self.help, "quit":quit, "build":self.build, "solve":self.solve_class,\
-             "show":self.show_class}
+             "show":self.show_class, "save":self.save}
         self.loop()
 
     def loop(self):
@@ -27,7 +28,7 @@ class CLI():
         by Julien Audet
         Electricity and Magnetism - 203-NYB-05
         for help, type "help"
-        to exit, type "exit"
+        to quit, type "quit"
         """)
         while self.command != "quit":
             self.command = input("=> ")
@@ -61,8 +62,8 @@ class CLI():
                 self.filename = source[1]
                 g = graph_from_pandas(self.filename)
                 self.graph = g
-            except:
-                print("need a file to import csv from")
+            except Exception as e:
+                print("need a file to import csv from, ", e.__class__)
         # build from GUI
         elif source[0] == "gui":
             c = graph_from_GUI()
@@ -90,6 +91,13 @@ class CLI():
                     for edge in self.graph.adj[node]:
                         print("node {} to node {} : ".format(node, edge), self.graph.adj[node][edge])                
 
+            elif target == "clean":
+                covered = []
+                for node in self.graph.adj:
+                    for edge in self.graph.adj[node]:
+                        if edge not in covered:
+                            print("node {} to node {} : ".format(node, edge), self.graph.adj[node][edge])                
+                    covered.append(node)
 
             # shows the plot of the data
             elif target == "plot":
@@ -119,7 +127,46 @@ class CLI():
                 print("select valid target")
         else:
             print("no graph loaded")
-            
+    
+    def save(self):
+        """
+        saves a copy of the current graph under a given filename
+        """
+        filename = input("What is the filename under which you want to save?\n")
+        if filename is not None:
+            path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
+            df = {"node1":[], "node2":[], "type":[], "resistance":[], "polarity":[], "voltage":[], "current":[], "flow":[]}
+            covered = []
+            for s_n in self.graph.adj: # s_n for starting node
+                for e_n in self.graph.adj[s_n]: # e_n for ending node
+                    if e_n not in covered:
+                        # add its info to the df
+                        edge_data = self.graph.adj[s_n][e_n]
+                        df["node1"].append(s_n)
+                        df["node2"].append(e_n)
+                        df["type"].append(edge_data["type"])
+                        df["resistance"].append(edge_data["resistance"])
+                        if len(edge_data["polarity"]) != 0:
+                            polarity = ""
+                            for p in edge_data["polarity"]:
+                                polarity += f"{p}:{edge_data['polarity'][p]}#"
+                            polarity = polarity.strip("#")
+                            df["polarity"].append(polarity)
+                        else:
+                            df["polarity"].append(pd.NA)
+                        df["voltage"].append(edge_data["voltage"])
+                        df["current"].append(edge_data["current"])
+                        df["flow"].append(edge_data["flow"])
+                covered.append(s_n)
+            print(df)
+            df = pd.DataFrame(df)
+            df.to_csv(path, sep='|', index=False)
+            print("saved successfully")
+
+        else:
+            print("sorry, a filename is required")
+
+
 def main():
     cli = CLI()
 
