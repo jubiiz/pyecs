@@ -170,15 +170,5 @@ class CLI():
 def main():
     cli = CLI()
 
-    """
-
-        # my drawing part
-        s3 = plt.subplot(111)
-        nx.draw_planar(solved, with_labels=True)
-        plt.show()
-    """
-
-
-
 if __name__ == "__main__":
     main()

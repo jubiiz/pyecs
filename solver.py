@@ -79,5 +79,9 @@ def build_polarity(graph, cycles):
             edge = (cycle[j], cycle[(j+1)%len(cycle)]) # the tuple denoting the edge we want
             if graph.edges[edge]["type"] == "resistance":
                 graph.edges[edge]["polarity"][i] = cycle[j]      # the polarity is added to the edge we want
+            else:
+                polarity = graph.edges[edge]["polarity"][-1]
+                graph.edges[edge]["polarity"][i] = polarity
+                graph.edges[edge]["polarity"].pop(-1)
 
     return(graph)
