@@ -39,7 +39,7 @@ class CLI():
                 if e.__class__ == KeyError:
                     print("Sorry, I don't recognize that as a possible command,\nplease enter a valid comand or type 'help'")  
                 else:
-                    print(e.__class__)
+                    print("command failed with error: ", e.__class__)
 
     def help(self):
         with open("help.txt", "r") as h:
@@ -53,8 +53,8 @@ class CLI():
             - gui    
         """
         source = input("please input where you want to build your file from\ncsv or gui\n").split(" ")
-        if len(source) == 0:
-            print("usage : '=> build source'\n no graph was made : no source given\nsource are 'gui' or 'csv'")
+        if len(source[0]) == 0:
+            print("usage : '=> build source'\nno graph was made : no source given\nsource are 'gui' or 'csv'")
             return None
         # build from csv file
         elif source[0] == "csv":
@@ -63,12 +63,15 @@ class CLI():
                 g = graph_from_pandas(self.filename)
                 self.graph = g
             except Exception as e:
-                print("need a file to import csv from, ", e.__class__)
+                print("Error: CSV graph initiation failed\nlast error: ", e.__class__)
         # build from GUI
         elif source[0] == "gui":
-            c = graph_from_GUI()
-            self.graph = c.graph
-            self.graph_class = c
+            try:
+                c = graph_from_GUI()
+                self.graph = c.graph
+                self.graph_class = c
+            except Exception as e:
+                print("Error: GUI graph initiation failed\nlast error: ", e.__class__)
         else:
             print("Source not in sources. Type help to know what are valid sources")     
 
@@ -77,9 +80,12 @@ class CLI():
             print("first input a graph please")
             return None
         else:
-            self.cycles = nx.cycle_basis(self.graph)
-            self.graph = build_polarity(self.graph, self.cycles)
-            self.graph = solve(self.graph, self.cycles)
+            try:
+                self.cycles = nx.cycle_basis(self.graph)
+                self.graph = build_polarity(self.graph, self.cycles)
+                self.graph = solve(self.graph, self.cycles)
+            except Exception as e:
+                print("Error: solving graph failed\nlast error: ", e.__class__)
 
     def show_class(self):
         target = input("input what to show, see help for details\n")
@@ -133,7 +139,7 @@ class CLI():
         saves a copy of the current graph under a given filename
         """
         filename = input("What is the filename under which you want to save?\n")
-        if filename is not None:
+        if len(filename) != 0:
             path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
             df = {"node1":[], "node2":[], "type":[], "resistance":[], "polarity":[], "voltage":[], "current":[], "flow":[]}
             covered = []
@@ -158,13 +164,12 @@ class CLI():
                         df["current"].append(edge_data["current"])
                         df["flow"].append(edge_data["flow"])
                 covered.append(s_n)
-            print(df)
             df = pd.DataFrame(df)
             df.to_csv(path, sep='|', index=False)
             print("saved successfully")
 
         else:
-            print("sorry, a filename is required")
+            print("sorry, a filename is required\nno file was saved")
 
 
 def main():

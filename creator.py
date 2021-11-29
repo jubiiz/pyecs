@@ -21,7 +21,7 @@ class GraphCreatorGUI():
         self.ax.grid(True)
 
     def connect(self):
-        """connects the event functions"""
+        """connects the event functions then displays the graph"""
         self.cidpress = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
         self.cidrelease = self.fig.canvas.mpl_connect('button_release_event', self.onrelease)
         plt.show()
@@ -39,8 +39,7 @@ class GraphCreatorGUI():
         new_case = (floor(event.xdata), floor(event.ydata))
         # not same case
         if new_case != self.press_case:
-            # create new edge with (self.press_case, new_case) as n2odes
-            # to do so we need a tkinter popup asking for data
+            # create new edge with (self.press_case, new_case) as nodes
             type, value = input("enter edge type and value, separated by a space \n").split(" ")
             print("type and value are ", type, value)
             if type == "resistance" or type == "r":
@@ -53,12 +52,14 @@ class GraphCreatorGUI():
                 style = "bo:"
 
 
-        # show edge in graph, add info, ready for new press
+        # show edge in graph
         x = [self.press_case[0]+0.5, new_case[0]+0.5]
         y = [self.press_case[1]+0.5, new_case[1]+0.5]
         self.ax.plot(x, y, style)
+        # add info text
         self.ax.text(((x[0]+x[1])/2), ((y[0]+y[1])//2), f'{type} {value}', {'ha': 'center', 'va': 'center', 'bbox': {'fc': '0.8', 'pad': 0}}, rotation=30)
         plt.show()
+        # ready for new press (delete past data)
         self.press_case = None
         self.press = None         
         
@@ -71,24 +72,27 @@ class GraphCreatorGUI():
 def graph_from_pandas(filename=None):
     """
     creates and return a graph from a csv file using pandas
-    uses "|" as the delimiter for the csv file !!!need to modify the code or the file for them to be compatible with different delimiters!!!
-    parameter filename : the name of the input file, without the suffix (.csv) (ex: graph1)
+    uses "|" as the delimiter for the csv file
+    filename : the name of the input file, without the suffix (.csv) (ex: graph1)
     file must be in "graphs" folder
     """
     import pandas as pd
     if filename == None:
-        print("you must enter a filename with your command, please")
+        print("you must enter a filename with your command, like: 'csv graph1'")
     path = os.path.join(os.getcwd(), "graphs{}{}.csv".format(os.sep, filename))
     df = pd.read_csv(path, delimiter="|")
     g = nx.Graph()
     num_rows = len(df)
-    # for every row, add the necessary stuff to the graph
+    # for every row, add the necessary components to the graph
     for i in range(num_rows):
-        #works polarity:
+        # builds polarity:
         polarity = {}
+        # if it already is given
         if not pd.isna(df["polarity"][i]):
+            # multiple polarities are split by '#'
             for p in df["polarity"][i].split("#"):
                 loop_num = p.split(":")[0]
+                # must convert cells to tuples rather than strings : '(1, 2)' to (1, 2)
                 start = to_tuple(p.split(":")[1])
                 polarity[int(loop_num)] = start
         g.add_edge(to_tuple(df["node1"][i]), to_tuple(df["node2"][i]), type=df["type"][i], resistance=df["resistance"][i], polarity=polarity, voltage=df["voltage"][i], current=df["current"][i], flow=df["flow"][i])
@@ -97,7 +101,7 @@ def graph_from_pandas(filename=None):
 
 def graph_from_GUI():
     """
-    returns the GUI interface object
+    returns the GUI interface object, ready for input
     """
     c = GraphCreatorGUI()
     c.connect()
@@ -105,6 +109,10 @@ def graph_from_GUI():
     return(c)
 
 def to_tuple(s):
+    """
+    correcly formats a 'string tuple' to an actual tuple (like from '(1, 2)' to (1, 2))
+    leaves non-tuple stuff to not tuples
+    """
     if s[0] != "(":
         return(s)
     s = s.strip(")").strip("(").split(", ")
@@ -113,6 +121,9 @@ def to_tuple(s):
     return(s)
 
 def buildgraph():
+    """
+    deprecated in-code graph building
+    """
     g = nx.Graph()
     g.add_edge("A", "B", type="battery", resistance=0, polarity={-1:"B"}, voltage=9, current=0)
     g.add_edge("C", "B", type="resistance", resistance=10, polarity={}, voltage=0, current=0)

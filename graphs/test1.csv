@@ -1,4 +1,0 @@
-node1|node2|type|resistance|polarity|voltage|current|flow
-(8, 11)|(7, 6)|resistance|10||0|0|0
-(8, 11)|(12, 9)|battery|0|-1:(8, 11)|10|0|0
-(7, 6)|(12, 9)|resistance|20||0|0|0
