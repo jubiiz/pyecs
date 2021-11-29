@@ -8,13 +8,13 @@ It is designed so that the average electricity student can quickly learn to use 
 ## usage: 
 To use it, Python must be installed on the computer. (for newcomers, check the "add to PATH" checkbox in "advanced settings" while you install Python). The following libraries must also be installed (a quick google will tell you how to do so)
 ----------
-Matplotlib
+Matplotlib |
 ----------
-Numpy
+Numpy      |
 ----------
-Pandas
+Pandas     |
 ----------
-Networkx
+Networkx   |
 ----------
 
 ## mini tutorial:
