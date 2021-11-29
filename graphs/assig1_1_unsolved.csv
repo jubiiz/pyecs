@@ -1,0 +1,11 @@
+node1|node2|type|resistance|polarity|voltage|current|flow
+(10, 6)|(10, 11)|battery|0|-1:(10, 6)|9|0|0
+(10, 6)|(10, 4)|resistance|10||0|0|0
+(10, 11)|(6, 11)|resistance|0||0|0|0
+(10, 11)|(14, 7)|resistance|15||0|0|0
+(6, 11)|(10, 4)|resistance|25||0|0|0
+(6, 11)|(6, 4)|resistance|75||0|0|0
+(6, 11)|(4, 7)|resistance|50||0|0|0
+(10, 4)|(6, 4)|resistance|100||0|0|0
+(10, 4)|(14, 7)|resistance|0||0|0|0
+(6, 4)|(4, 7)|resistance|100||0|0|0
